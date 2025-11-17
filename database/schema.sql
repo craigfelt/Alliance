@@ -164,7 +164,7 @@ CREATE INDEX idx_maintenance_status ON maintenance_requests(status);
 
 -- Insert sample admin user (password: admin123)
 INSERT INTO users (email, password, first_name, last_name, role)
-VALUES ('admin@alliance.co.za', '$2a$10$YQhE3r0Z9h8GvVJKxNqXM.WkHxNfXqYgL5bXz9X2xrMQ8XzxX0X0K', 'Admin', 'User', 'admin');
+VALUES ('admin@alliance.co.za', '$2b$10$VzkbDjEDrKw4VNJjDbWxdOvaHapEomMgGVZsrc2kmLFbMouSihxBa', 'Admin', 'User', 'admin');
 
 -- Insert sample data for demonstration
 INSERT INTO properties (name, type, address, city, province, total_area)

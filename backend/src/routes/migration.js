@@ -8,7 +8,7 @@ import {
   importInvoices,
 } from '../controllers/migrationController.js';
 import { protect } from '../middleware/auth.js';
-import { uploadLimiter } from '../middleware/rateLimiter.js';
+import { uploadLimiter, apiLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
@@ -30,8 +30,8 @@ const upload = multer({
 // All migration routes require authentication
 router.use(protect);
 
-// Get migration statistics
-router.get('/stats', getStats);
+// Get migration statistics with rate limiting
+router.get('/stats', apiLimiter, getStats);
 
 // Import endpoints with rate limiting
 router.post('/properties', uploadLimiter, upload.single('file'), importProperties);

@@ -15,6 +15,7 @@ import financialRoutes from './routes/financial.js';
 import maintenanceRoutes from './routes/maintenance.js';
 import reportRoutes from './routes/reports.js';
 import dashboardRoutes from './routes/dashboard.js';
+import migrationRoutes from './routes/migration.js';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler.js';
@@ -50,6 +51,7 @@ app.use('/api/financial', financialRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/migration', migrationRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

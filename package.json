@@ -1,0 +1,22 @@
+{
+  "name": "alliance-property-management",
+  "version": "1.0.0",
+  "description": "Property Management System for Alliance Property Group",
+  "scripts": {
+    "setup": "chmod +x database/setup.sh && ./database/setup.sh",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "start:backend": "cd backend && npm start",
+    "build:frontend": "cd frontend && npm run build",
+    "preview:frontend": "cd frontend && npm run preview"
+  },
+  "keywords": [
+    "property-management",
+    "real-estate",
+    "commercial-leasing",
+    "south-africa"
+  ],
+  "author": "Alliance Property Group",
+  "license": "PROPRIETARY"
+}

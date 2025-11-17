@@ -8,6 +8,7 @@ import {
   importInvoices,
 } from '../controllers/migrationController.js';
 import { protect } from '../middleware/auth.js';
+import { uploadLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
@@ -32,10 +33,10 @@ router.use(protect);
 // Get migration statistics
 router.get('/stats', getStats);
 
-// Import endpoints
-router.post('/properties', upload.single('file'), importProperties);
-router.post('/tenants', upload.single('file'), importTenants);
-router.post('/leases', upload.single('file'), importLeases);
-router.post('/invoices', upload.single('file'), importInvoices);
+// Import endpoints with rate limiting
+router.post('/properties', uploadLimiter, upload.single('file'), importProperties);
+router.post('/tenants', uploadLimiter, upload.single('file'), importTenants);
+router.post('/leases', uploadLimiter, upload.single('file'), importLeases);
+router.post('/invoices', uploadLimiter, upload.single('file'), importInvoices);
 
 export default router;

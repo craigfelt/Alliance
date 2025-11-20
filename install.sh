@@ -24,6 +24,19 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Check if we're in a cloned repository or need to clone
+REPO_URL="https://github.com/craigfelt/Alliance.git"
+NEEDS_CLONE=0
+ORIGINAL_DIR=$(pwd)
+
+# Check if we're in the Alliance repository
+if [ ! -f "package.json" ] || [ ! -d "backend" ] || [ ! -d "frontend" ]; then
+    echo -e "${YELLOW}Repository files not found in current directory.${NC}"
+    echo -e "${YELLOW}This installer will clone the repository from GitHub.${NC}"
+    echo ""
+    NEEDS_CLONE=1
+fi
+
 # Step 1: Check Prerequisites
 echo -e "${YELLOW}Step 1: Checking Prerequisites...${NC}"
 echo ""
@@ -81,13 +94,61 @@ if command_exists git; then
     GIT_VERSION=$(git --version)
     echo -e " ${GREEN}Found: $GIT_VERSION${NC}"
 else
-    echo -e " ${YELLOW}NOT FOUND (Optional)${NC}"
-    echo -e "    ${YELLOW}Git is optional but recommended for updates.${NC}"
+    if [ $NEEDS_CLONE -eq 1 ]; then
+        echo -e " ${RED}NOT FOUND${NC}"
+        echo ""
+        echo -e "${RED}Git is required to clone the repository.${NC}"
+        echo -e "${RED}Please install Git:${NC}"
+        echo -e "${RED}  - Ubuntu/Debian: sudo apt-get install git${NC}"
+        echo -e "${RED}  - macOS: brew install git${NC}"
+        echo -e "${RED}  - Or visit: https://git-scm.com/${NC}"
+        echo -e "${RED}After installation, run this script again.${NC}"
+        exit 1
+    else
+        echo -e " ${YELLOW}NOT FOUND (Optional)${NC}"
+        echo -e "    ${YELLOW}Git is optional but recommended for updates.${NC}"
+    fi
 fi
 
 echo ""
 echo -e "${GREEN}All required prerequisites are installed!${NC}"
 echo ""
+
+# Step 1.5: Clone Repository if needed
+if [ $NEEDS_CLONE -eq 1 ]; then
+    echo -e "${YELLOW}Step 1.5: Cloning Repository from GitHub...${NC}"
+    echo ""
+    
+    CLONE_DIR="Alliance"
+    COUNTER=1
+    
+    # Find available directory name
+    while [ -d "$CLONE_DIR" ]; do
+        CLONE_DIR="Alliance_$COUNTER"
+        COUNTER=$((COUNTER + 1))
+    done
+    
+    echo -e "  ${CYAN}Cloning into: $CLONE_DIR${NC}"
+    echo -e "  ${CYAN}Repository: $REPO_URL${NC}"
+    echo ""
+    echo -e "  ${YELLOW}This may take a few minutes depending on your connection...${NC}"
+    echo ""
+    
+    git clone $REPO_URL $CLONE_DIR
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Failed to clone repository${NC}"
+        echo -e "${RED}Please check your internet connection and try again.${NC}"
+        exit 1
+    fi
+    
+    echo ""
+    echo -e "  ${GREEN}Repository cloned successfully!${NC}"
+    echo -e "  ${CYAN}Changing to repository directory...${NC}"
+    echo ""
+    
+    cd $CLONE_DIR
+fi
+
 
 # Step 2: Install Dependencies
 echo -e "${YELLOW}Step 2: Installing Dependencies...${NC}"

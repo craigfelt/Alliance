@@ -11,6 +11,22 @@ echo   Alliance Property Management System - Installer
 echo ======================================================
 echo.
 
+REM Check if we're in a cloned repository or need to clone
+set REPO_URL=https://github.com/craigfelt/Alliance.git
+set NEEDS_CLONE=0
+set ORIGINAL_DIR=%CD%
+
+REM Check if we're in the Alliance repository
+if not exist "package.json" set NEEDS_CLONE=1
+if not exist "backend" set NEEDS_CLONE=1
+if not exist "frontend" set NEEDS_CLONE=1
+
+if %NEEDS_CLONE% equ 1 (
+    echo Repository files not found in current directory.
+    echo This installer will clone the repository from GitHub.
+    echo.
+)
+
 REM Step 1: Check Prerequisites
 echo Step 1: Checking Prerequisites...
 echo.
@@ -62,11 +78,22 @@ if %errorlevel% neq 0 (
 for /f "tokens=*" %%i in ('psql --version') do set PG_VERSION=%%i
 echo   Found: %PG_VERSION%
 
-REM Check Git (optional)
+REM Check Git
 echo   Checking Git...
 where git >nul 2>&1
 if %errorlevel% neq 0 (
-    echo   NOT FOUND (Optional - Git is recommended for updates)
+    if %NEEDS_CLONE% equ 1 (
+        echo   [ERROR] Git NOT FOUND
+        echo.
+        echo   Git is required to clone the repository.
+        echo   Please install Git from https://git-scm.com/download/windows
+        echo   After installation, run this script again.
+        echo.
+        pause
+        exit /b 1
+    ) else (
+        echo   NOT FOUND (Optional - Git is recommended for updates)
+    )
 ) else (
     for /f "tokens=*" %%i in ('git --version') do set GIT_VERSION=%%i
     echo   Found: !GIT_VERSION!
@@ -75,6 +102,45 @@ if %errorlevel% neq 0 (
 echo.
 echo All required prerequisites are installed!
 echo.
+
+REM Step 1.5: Clone Repository if needed
+if %NEEDS_CLONE% equ 1 (
+    echo Step 1.5: Cloning Repository from GitHub...
+    echo.
+    
+    set CLONE_DIR=Alliance
+    set COUNTER=1
+    
+    REM Find available directory name
+    :find_dir
+    if exist "!CLONE_DIR!" (
+        set CLONE_DIR=Alliance_!COUNTER!
+        set /a COUNTER=!COUNTER!+1
+        goto find_dir
+    )
+    
+    echo   Cloning into: !CLONE_DIR!
+    echo   Repository: %REPO_URL%
+    echo.
+    echo   This may take a few minutes depending on your connection...
+    echo.
+    
+    git clone %REPO_URL% !CLONE_DIR!
+    if %errorlevel% neq 0 (
+        echo [ERROR] Failed to clone repository
+        echo Please check your internet connection and try again.
+        pause
+        exit /b 1
+    )
+    
+    echo.
+    echo   Repository cloned successfully!
+    echo   Changing to repository directory...
+    echo.
+    
+    cd !CLONE_DIR!
+)
+
 
 REM Step 2: Install Dependencies
 echo Step 2: Installing Dependencies...

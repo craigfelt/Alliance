@@ -1,5 +1,12 @@
 # Installation Troubleshooting - Quick Reference
 
+## 💡 Working Locally in VS Code?
+
+If you're developing the Alliance app in VS Code and having PostgreSQL connection issues, see:
+**[VSCODE_POSTGRESQL_SETUP.md](VSCODE_POSTGRESQL_SETUP.md)** - Complete guide for local development setup
+
+---
+
 ## Common Installation Issues & Solutions
 
 ### 🔴 Issue 1: PowerShell Execution Policy Error

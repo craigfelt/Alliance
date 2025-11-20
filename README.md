@@ -108,6 +108,11 @@ If the installer fails with password authentication errors:
    - Try default password: `postgres`
    - Check your installation notes for the password you set
 
+### 💻 Local Development in VS Code?
+
+If you're working on the Alliance app locally and can't connect to PostgreSQL:
+- **See:** [VSCODE_POSTGRESQL_SETUP.md](VSCODE_POSTGRESQL_SETUP.md) for complete local development setup guide
+
 📖 **See [INSTALL.md](INSTALL.md) for detailed installation instructions and troubleshooting.**
 📥 **See [DOWNLOAD.md](DOWNLOAD.md) for various download methods.**
 🔄 **See [CLONE_SETUP.md](CLONE_SETUP.md) for manual repository cloning (optional).**

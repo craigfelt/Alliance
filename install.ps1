@@ -150,7 +150,8 @@ if ($needsClone) {
         $counter++
     }
     
-    Write-Host "  Cloning into: $cloneDir" -ForegroundColor Cyan
+    Write-Host "  Cloning into directory: $cloneDir" -ForegroundColor Cyan
+    Write-Host "  Full path: $originalLocation\$cloneDir" -ForegroundColor Cyan
     Write-Host "  Repository: $REPO_URL" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "  This may take a few minutes depending on your connection..." -ForegroundColor Yellow
@@ -182,6 +183,7 @@ if ($needsClone) {
     
     Write-Host ""
     Write-Host "  Repository cloned successfully!" -ForegroundColor Green
+    Write-Host "  Location: $originalLocation\$cloneDir" -ForegroundColor Cyan
     Write-Host "  Changing to repository directory..." -ForegroundColor Cyan
     Write-Host ""
     

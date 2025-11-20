@@ -63,7 +63,8 @@ The installer automates the entire setup process:
 2. **Clones Repository (if needed)**
    - Automatically detects if running from a cloned repository
    - If not, clones the full repository from GitHub
-   - Creates a new directory (Alliance, or Alliance_1 if exists)
+   - Creates a new directory in your current location (Alliance, or Alliance_1, Alliance_2, etc. if the name already exists)
+   - The full path will be displayed during installation (e.g., C:\Users\YourName\Alliance)
 
 3. **Installs Dependencies**
    - Installs root project dependencies

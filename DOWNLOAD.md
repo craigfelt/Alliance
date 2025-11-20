@@ -149,13 +149,15 @@ Once complete, you'll see instructions to:
 
 1. **Start the backend** (in one terminal):
    ```bash
-   cd Alliance/backend  # or Alliance_1/backend if Alliance directory existed
+   cd Alliance/backend  # Directory will be created where you ran the installer
+   # (or Alliance_1/backend if Alliance directory already existed)
    npm run dev
    ```
 
 2. **Start the frontend** (in another terminal):
    ```bash
-   cd Alliance/frontend  # or Alliance_1/frontend if Alliance directory existed
+   cd Alliance/frontend  # Same directory as above
+   # (or Alliance_1/frontend if Alliance directory already existed)
    npm run dev
    ```
 

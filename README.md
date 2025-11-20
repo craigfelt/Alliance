@@ -243,6 +243,26 @@ API endpoints are available at `/api/*`:
 - `/api/reports` - Report generation
 - `/api/dashboard` - Dashboard statistics
 
+## 🤖 GitHub Copilot Workflow
+
+This repository supports GitHub Copilot Agent for automated code changes via PRs. To sync agent changes to your local repository:
+
+**Quick Sync:**
+```bash
+# Windows
+sync-pr.bat <branch-name>
+
+# Linux/Mac
+./sync-pr.sh <branch-name>
+```
+
+**Example:**
+```bash
+./sync-pr.sh copilot/find-cloning-repository-location
+```
+
+For complete details on using GitHub Copilot (both the agent and local VS Code extension), see [COPILOT_WORKFLOW.md](COPILOT_WORKFLOW.md).
+
 ## 🤝 Contributing
 
 1. Fork the repository

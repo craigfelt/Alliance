@@ -128,7 +128,8 @@ if [ $NEEDS_CLONE -eq 1 ]; then
         COUNTER=$((COUNTER + 1))
     done
     
-    echo -e "  ${CYAN}Cloning into: $CLONE_DIR${NC}"
+    echo -e "  ${CYAN}Cloning into directory: $CLONE_DIR${NC}"
+    echo -e "  ${CYAN}Full path: $ORIGINAL_DIR/$CLONE_DIR${NC}"
     echo -e "  ${CYAN}Repository: $REPO_URL${NC}"
     echo ""
     echo -e "  ${YELLOW}This may take a few minutes depending on your connection...${NC}"
@@ -143,6 +144,7 @@ if [ $NEEDS_CLONE -eq 1 ]; then
     
     echo ""
     echo -e "  ${GREEN}Repository cloned successfully!${NC}"
+    echo -e "  ${CYAN}Location: $ORIGINAL_DIR/$CLONE_DIR${NC}"
     echo -e "  ${CYAN}Changing to repository directory...${NC}"
     echo ""
     

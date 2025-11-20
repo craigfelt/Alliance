@@ -123,7 +123,8 @@ if %NEEDS_CLONE% equ 1 (
         goto find_dir
     )
     
-    echo   Cloning into: !CLONE_DIR!
+    echo   Cloning into directory: !CLONE_DIR!
+    echo   Full path: %CD%\!CLONE_DIR!
     echo   Repository: %REPO_URL%
     echo.
     echo   This may take a few minutes depending on your connection...
@@ -139,6 +140,7 @@ if %NEEDS_CLONE% equ 1 (
     
     echo.
     echo   Repository cloned successfully!
+    echo   Location: %CD%\!CLONE_DIR!
     echo   Changing to repository directory...
     echo.
     

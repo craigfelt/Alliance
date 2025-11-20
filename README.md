@@ -2,6 +2,14 @@
 
 A modern, cloud-based property management system for Alliance Property Group in Durban, South Africa. This system replaces the legacy MDA Property Manager with a comprehensive web-based solution designed for commercial property leasing.
 
+## 📦 Easy Installation Available!
+
+**New!** Download and run our automated installer to get up and running in minutes:
+- **Windows**: `install.ps1` (PowerShell) or `install.bat`
+- **Mac/Linux**: `install.sh`
+
+See [INSTALLER_SUMMARY.md](INSTALLER_SUMMARY.md) for a quick overview, or jump directly to [INSTALL.md](INSTALL.md) for complete installation instructions.
+
 ## 🌟 Features
 
 ### Core Functionality

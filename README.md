@@ -93,6 +93,21 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/mai
 - Set up the database
 - Configure environment files
 
+### 🔑 PostgreSQL Password Issues?
+
+If the installer fails with password authentication errors:
+
+1. **Reset your PostgreSQL password:**
+   - **Windows:** Download and run [`reset-postgres-password.bat`](https://raw.githubusercontent.com/craigfelt/Alliance/main/reset-postgres-password.bat) as Administrator
+   - **Linux/Mac:** Download and run [`reset-postgres-password.sh`](https://raw.githubusercontent.com/craigfelt/Alliance/main/reset-postgres-password.sh)
+
+2. **See complete password guide:** [POSTGRESQL_PASSWORD_SETUP.md](POSTGRESQL_PASSWORD_SETUP.md)
+
+3. **Common fixes:**
+   - Verify PostgreSQL is running (services.msc on Windows)
+   - Try default password: `postgres`
+   - Check your installation notes for the password you set
+
 📖 **See [INSTALL.md](INSTALL.md) for detailed installation instructions and troubleshooting.**
 📥 **See [DOWNLOAD.md](DOWNLOAD.md) for various download methods.**
 🔄 **See [CLONE_SETUP.md](CLONE_SETUP.md) for manual repository cloning (optional).**

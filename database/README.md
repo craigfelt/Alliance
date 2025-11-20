@@ -77,6 +77,35 @@ After running the schema, you can log in with:
 
 ## Troubleshooting
 
+### PostgreSQL Password Issues
+
+**"password authentication failed" or "FATAL: password authentication failed"**
+
+This is the most common installation issue. Solutions:
+
+1. **Find your password:**
+   - Check password manager or installation notes
+   - Try common defaults: `postgres`, or the password you set during installation
+   - Look in `backend/.env` if you've installed before: `DB_PASSWORD=...`
+
+2. **Test your password:**
+   ```bash
+   psql -U postgres
+   # Enter password when prompted
+   ```
+   If this works, use the same password in the installer.
+
+3. **Reset your password:**
+   - **Windows:** Run `reset-postgres-password.bat` as Administrator
+   - **Linux/Mac:** Run `./reset-postgres-password.sh`
+   - **Manual:** See [POSTGRESQL_PASSWORD_SETUP.md](../POSTGRESQL_PASSWORD_SETUP.md) for detailed instructions
+
+4. **After resetting, update Alliance:**
+   ```bash
+   # Edit backend/.env and update:
+   DB_PASSWORD=your-new-password
+   ```
+
 ### "database does not exist"
 - Make sure you ran `create_database.sql` first
 - Verify the database was created: `psql -U postgres -l | grep alliance_property`

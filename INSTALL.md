@@ -157,6 +157,26 @@ The frontend will start at: http://localhost:5173
 
 ### Installation Issues
 
+**"Failed to connect to PostgreSQL" or "Incorrect password" during installation**
+- **What it means:** The installer cannot connect to PostgreSQL with the password you provided
+- **Complete Guide:** See [POSTGRESQL_PASSWORD_SETUP.md](POSTGRESQL_PASSWORD_SETUP.md) for password reset
+- **Quick Solutions:**
+  1. **Verify PostgreSQL is running:**
+     - Windows: Open services.msc, look for "postgresql-x64-XX", ensure it's started
+     - Linux: `sudo systemctl status postgresql`
+     - Mac: `brew services list | grep postgresql`
+  2. **Double-check your password:**
+     - Try connecting manually: `psql -U postgres`
+     - If this works, re-run the installer with the same password
+  3. **Reset your password:**
+     - Windows: Run `reset-postgres-password.bat` as Administrator
+     - Linux/Mac: Run `./reset-postgres-password.sh`
+     - Or follow manual steps in [POSTGRESQL_PASSWORD_SETUP.md](POSTGRESQL_PASSWORD_SETUP.md)
+  4. **Common default passwords to try:**
+     - `postgres`
+     - The password you set during PostgreSQL installation
+     - Check your password manager or installation notes
+
 **"PowerShell script cannot be loaded" or "not digitally signed" error**
 - **What it means:** Windows PowerShell execution policy is blocking unsigned scripts for security
 - **Complete Guide:** See [POWERSHELL_EXECUTION_POLICY.md](POWERSHELL_EXECUTION_POLICY.md) for detailed solutions

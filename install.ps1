@@ -6,7 +6,23 @@ param(
     [switch]$SkipDatabaseSetup = $false
 )
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
+
+# Trap to catch any terminating errors and prevent window from closing
+trap {
+    Write-Host ""
+    Write-Host "======================================================" -ForegroundColor Red
+    Write-Host "  CRITICAL ERROR OCCURRED" -ForegroundColor Red
+    Write-Host "======================================================" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Error Details: $_" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Stack Trace:" -ForegroundColor Yellow
+    Write-Host $_.ScriptStackTrace -ForegroundColor Yellow
+    Write-Host ""
+    Read-Host "Press Enter to exit"
+    exit 1
+}
 
 Write-Host ""
 Write-Host "======================================================" -ForegroundColor Cyan
@@ -140,10 +156,25 @@ if ($needsClone) {
     Write-Host "  This may take a few minutes depending on your connection..." -ForegroundColor Yellow
     Write-Host ""
     
-    git clone $REPO_URL $cloneDir
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "Failed to clone repository" -ForegroundColor Red
-        Write-Host "Please check your internet connection and try again." -ForegroundColor Red
+    try {
+        $cloneOutput = git clone $REPO_URL $cloneDir 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host ""
+            Write-Host "  ERROR: Failed to clone repository" -ForegroundColor Red
+            Write-Host "  $cloneOutput" -ForegroundColor Red
+            Write-Host ""
+            Write-Host "  Please check:" -ForegroundColor Yellow
+            Write-Host "  1. Your internet connection is working" -ForegroundColor Yellow
+            Write-Host "  2. You can access GitHub (https://github.com)" -ForegroundColor Yellow
+            Write-Host "  3. Git is properly installed (try: git --version)" -ForegroundColor Yellow
+            Write-Host ""
+            Read-Host "Press Enter to exit"
+            exit 1
+        }
+    }
+    catch {
+        Write-Host ""
+        Write-Host "  ERROR: Exception during repository cloning: $_" -ForegroundColor Red
         Write-Host ""
         Read-Host "Press Enter to exit"
         exit 1
@@ -164,9 +195,24 @@ Write-Host ""
 
 # Install root dependencies
 Write-Host "  Installing root dependencies..." -ForegroundColor Cyan
-npm install
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Failed to install root dependencies" -ForegroundColor Red
+try {
+    npm install 2>&1 | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "  ERROR: Failed to install root dependencies" -ForegroundColor Red
+        Write-Host ""
+        Write-Host "  Please check:" -ForegroundColor Yellow
+        Write-Host "  1. Your internet connection is working" -ForegroundColor Yellow
+        Write-Host "  2. npm is properly installed (try: npm --version)" -ForegroundColor Yellow
+        Write-Host "  3. You have write permissions in this directory" -ForegroundColor Yellow
+        Write-Host ""
+        Read-Host "Press Enter to exit"
+        exit 1
+    }
+}
+catch {
+    Write-Host ""
+    Write-Host "  ERROR: Exception during root dependency installation: $_" -ForegroundColor Red
     Write-Host ""
     Read-Host "Press Enter to exit"
     exit 1
@@ -174,27 +220,51 @@ if ($LASTEXITCODE -ne 0) {
 
 # Install backend dependencies
 Write-Host "  Installing backend dependencies..." -ForegroundColor Cyan
-Set-Location -Path "backend"
-npm install
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Failed to install backend dependencies" -ForegroundColor Red
+try {
+    Set-Location -Path "backend"
+    npm install 2>&1 | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "  ERROR: Failed to install backend dependencies" -ForegroundColor Red
+        Write-Host ""
+        Read-Host "Press Enter to exit"
+        Set-Location -Path ".."
+        exit 1
+    }
+    Set-Location -Path ".."
+}
+catch {
     Write-Host ""
+    Write-Host "  ERROR: Exception during backend dependency installation: $_" -ForegroundColor Red
+    Write-Host ""
+    Set-Location -Path ".."
     Read-Host "Press Enter to exit"
     exit 1
 }
-Set-Location -Path ".."
 
 # Install frontend dependencies
 Write-Host "  Installing frontend dependencies..." -ForegroundColor Cyan
-Set-Location -Path "frontend"
-npm install
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Failed to install frontend dependencies" -ForegroundColor Red
+try {
+    Set-Location -Path "frontend"
+    npm install 2>&1 | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "  ERROR: Failed to install frontend dependencies" -ForegroundColor Red
+        Write-Host ""
+        Read-Host "Press Enter to exit"
+        Set-Location -Path ".."
+        exit 1
+    }
+    Set-Location -Path ".."
+}
+catch {
     Write-Host ""
+    Write-Host "  ERROR: Exception during frontend dependency installation: $_" -ForegroundColor Red
+    Write-Host ""
+    Set-Location -Path ".."
     Read-Host "Press Enter to exit"
     exit 1
 }
-Set-Location -Path ".."
 
 Write-Host ""
 Write-Host "Dependencies installed successfully!" -ForegroundColor Green
@@ -252,7 +322,31 @@ if (!$SkipDatabaseSetup) {
     # Check if database exists
     Write-Host "  Checking if database exists..." -ForegroundColor Cyan
     $env:PGPASSWORD = $dbPasswordPlain
-    $dbExists = psql -U $dbUser -lqt 2>$null | Select-String -Pattern "\b$dbName\b" -Quiet
+    
+    try {
+        $dbListOutput = psql -U $dbUser -lqt 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "  ERROR: Failed to connect to PostgreSQL" -ForegroundColor Red
+            Write-Host "  $dbListOutput" -ForegroundColor Red
+            Write-Host ""
+            Write-Host "  Please verify:" -ForegroundColor Yellow
+            Write-Host "  1. PostgreSQL service is running" -ForegroundColor Yellow
+            Write-Host "  2. Password is correct for user '$dbUser'" -ForegroundColor Yellow
+            Write-Host "  3. User '$dbUser' has permission to connect" -ForegroundColor Yellow
+            Write-Host ""
+            $env:PGPASSWORD = $null
+            Read-Host "Press Enter to exit"
+            exit 1
+        }
+        $dbExists = $dbListOutput | Select-String -Pattern "\b$dbName\b" -Quiet
+    }
+    catch {
+        Write-Host "  ERROR: Failed to check database: $_" -ForegroundColor Red
+        Write-Host ""
+        $env:PGPASSWORD = $null
+        Read-Host "Press Enter to exit"
+        exit 1
+    }
     
     if ($dbExists) {
         Write-Host "  Database '$dbName' already exists." -ForegroundColor Yellow
@@ -275,30 +369,61 @@ if (!$SkipDatabaseSetup) {
     if (!$SkipDatabaseSetup) {
         # Create database
         Write-Host "  Creating database..." -ForegroundColor Cyan
-        Get-Content "database\create_database.sql" | psql -U $dbUser -d postgres 2>$null
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "  Database creation via script had issues, trying createdb command..." -ForegroundColor Yellow
-            createdb -U $dbUser $dbName 2>$null
-            if ($LASTEXITCODE -ne 0) {
-                Write-Host "  Failed to create database" -ForegroundColor Red
-                Write-Host "  Make sure PostgreSQL is running and credentials are correct." -ForegroundColor Red
-                Write-Host ""
-                Read-Host "Press Enter to exit"
-                exit 1
-            }
-        }
-        Write-Host "  Database created successfully!" -ForegroundColor Green
         
-        # Run schema
-        Write-Host "  Applying database schema..." -ForegroundColor Cyan
-        Get-Content "database\schema.sql" | psql -U $dbUser -d $dbName
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "  Failed to apply schema" -ForegroundColor Red
+        try {
+            $createOutput = Get-Content "database\create_database.sql" | psql -U $dbUser -d postgres 2>&1
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "  Database creation via script had issues, trying createdb command..." -ForegroundColor Yellow
+                $createdbOutput = createdb -U $dbUser $dbName 2>&1
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Host "  ERROR: Failed to create database" -ForegroundColor Red
+                    Write-Host "  $createdbOutput" -ForegroundColor Red
+                    Write-Host ""
+                    Write-Host "  Please verify:" -ForegroundColor Yellow
+                    Write-Host "  1. PostgreSQL is running" -ForegroundColor Yellow
+                    Write-Host "  2. Credentials are correct" -ForegroundColor Yellow
+                    Write-Host "  3. User '$dbUser' has createdb permission" -ForegroundColor Yellow
+                    Write-Host ""
+                    $env:PGPASSWORD = $null
+                    Read-Host "Press Enter to exit"
+                    exit 1
+                }
+            }
+            Write-Host "  Database created successfully!" -ForegroundColor Green
+        }
+        catch {
+            Write-Host "  ERROR: Failed to create database: $_" -ForegroundColor Red
             Write-Host ""
+            $env:PGPASSWORD = $null
             Read-Host "Press Enter to exit"
             exit 1
         }
-        Write-Host "  Schema applied successfully!" -ForegroundColor Green
+        
+        # Run schema
+        Write-Host "  Applying database schema..." -ForegroundColor Cyan
+        
+        try {
+            $schemaOutput = Get-Content "database\schema.sql" | psql -U $dbUser -d $dbName 2>&1
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "  ERROR: Failed to apply schema" -ForegroundColor Red
+                Write-Host "  $schemaOutput" -ForegroundColor Red
+                Write-Host ""
+                Write-Host "  The database was created but schema application failed." -ForegroundColor Yellow
+                Write-Host "  You may need to run the schema manually." -ForegroundColor Yellow
+                Write-Host ""
+                $env:PGPASSWORD = $null
+                Read-Host "Press Enter to exit"
+                exit 1
+            }
+            Write-Host "  Schema applied successfully!" -ForegroundColor Green
+        }
+        catch {
+            Write-Host "  ERROR: Failed to apply schema: $_" -ForegroundColor Red
+            Write-Host ""
+            $env:PGPASSWORD = $null
+            Read-Host "Press Enter to exit"
+            exit 1
+        }
     }
     
     # Clear password from environment

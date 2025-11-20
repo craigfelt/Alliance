@@ -8,6 +8,22 @@ param(
 
 $ErrorActionPreference = "Continue"
 
+# Trap to catch any terminating errors and prevent window from closing
+trap {
+    Write-Host ""
+    Write-Host "======================================================" -ForegroundColor Red
+    Write-Host "  CRITICAL ERROR OCCURRED" -ForegroundColor Red
+    Write-Host "======================================================" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Error Details: $_" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Stack Trace:" -ForegroundColor Yellow
+    Write-Host $_.ScriptStackTrace -ForegroundColor Yellow
+    Write-Host ""
+    Read-Host "Press Enter to exit"
+    exit 1
+}
+
 Write-Host ""
 Write-Host "======================================================" -ForegroundColor Cyan
 Write-Host "  Alliance Property Management System - Installer" -ForegroundColor Cyan
@@ -140,10 +156,25 @@ if ($needsClone) {
     Write-Host "  This may take a few minutes depending on your connection..." -ForegroundColor Yellow
     Write-Host ""
     
-    git clone $REPO_URL $cloneDir
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "Failed to clone repository" -ForegroundColor Red
-        Write-Host "Please check your internet connection and try again." -ForegroundColor Red
+    try {
+        $cloneOutput = git clone $REPO_URL $cloneDir 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host ""
+            Write-Host "  ERROR: Failed to clone repository" -ForegroundColor Red
+            Write-Host "  $cloneOutput" -ForegroundColor Red
+            Write-Host ""
+            Write-Host "  Please check:" -ForegroundColor Yellow
+            Write-Host "  1. Your internet connection is working" -ForegroundColor Yellow
+            Write-Host "  2. You can access GitHub (https://github.com)" -ForegroundColor Yellow
+            Write-Host "  3. Git is properly installed (try: git --version)" -ForegroundColor Yellow
+            Write-Host ""
+            Read-Host "Press Enter to exit"
+            exit 1
+        }
+    }
+    catch {
+        Write-Host ""
+        Write-Host "  ERROR: Exception during repository cloning: $_" -ForegroundColor Red
         Write-Host ""
         Read-Host "Press Enter to exit"
         exit 1
@@ -164,9 +195,24 @@ Write-Host ""
 
 # Install root dependencies
 Write-Host "  Installing root dependencies..." -ForegroundColor Cyan
-npm install
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Failed to install root dependencies" -ForegroundColor Red
+try {
+    npm install 2>&1 | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "  ERROR: Failed to install root dependencies" -ForegroundColor Red
+        Write-Host ""
+        Write-Host "  Please check:" -ForegroundColor Yellow
+        Write-Host "  1. Your internet connection is working" -ForegroundColor Yellow
+        Write-Host "  2. npm is properly installed (try: npm --version)" -ForegroundColor Yellow
+        Write-Host "  3. You have write permissions in this directory" -ForegroundColor Yellow
+        Write-Host ""
+        Read-Host "Press Enter to exit"
+        exit 1
+    }
+}
+catch {
+    Write-Host ""
+    Write-Host "  ERROR: Exception during root dependency installation: $_" -ForegroundColor Red
     Write-Host ""
     Read-Host "Press Enter to exit"
     exit 1
@@ -174,27 +220,51 @@ if ($LASTEXITCODE -ne 0) {
 
 # Install backend dependencies
 Write-Host "  Installing backend dependencies..." -ForegroundColor Cyan
-Set-Location -Path "backend"
-npm install
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Failed to install backend dependencies" -ForegroundColor Red
+try {
+    Set-Location -Path "backend"
+    npm install 2>&1 | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "  ERROR: Failed to install backend dependencies" -ForegroundColor Red
+        Write-Host ""
+        Read-Host "Press Enter to exit"
+        Set-Location -Path ".."
+        exit 1
+    }
+    Set-Location -Path ".."
+}
+catch {
     Write-Host ""
+    Write-Host "  ERROR: Exception during backend dependency installation: $_" -ForegroundColor Red
+    Write-Host ""
+    Set-Location -Path ".."
     Read-Host "Press Enter to exit"
     exit 1
 }
-Set-Location -Path ".."
 
 # Install frontend dependencies
 Write-Host "  Installing frontend dependencies..." -ForegroundColor Cyan
-Set-Location -Path "frontend"
-npm install
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Failed to install frontend dependencies" -ForegroundColor Red
+try {
+    Set-Location -Path "frontend"
+    npm install 2>&1 | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "  ERROR: Failed to install frontend dependencies" -ForegroundColor Red
+        Write-Host ""
+        Read-Host "Press Enter to exit"
+        Set-Location -Path ".."
+        exit 1
+    }
+    Set-Location -Path ".."
+}
+catch {
     Write-Host ""
+    Write-Host "  ERROR: Exception during frontend dependency installation: $_" -ForegroundColor Red
+    Write-Host ""
+    Set-Location -Path ".."
     Read-Host "Press Enter to exit"
     exit 1
 }
-Set-Location -Path ".."
 
 Write-Host ""
 Write-Host "Dependencies installed successfully!" -ForegroundColor Green

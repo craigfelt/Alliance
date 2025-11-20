@@ -50,13 +50,27 @@ A modern, cloud-based property management system for Alliance Property Group in 
 
 ## 🚀 Installation
 
-### 1. Clone the repository
+### Easy Installation (Recommended)
+
+We provide automated installer scripts for all platforms:
+
+**Windows:**
+- Download and run `install.ps1` (PowerShell) or `install.bat` (Command Prompt)
+
+**Linux/Mac:**
+- Download and run `install.sh`
+
+See [INSTALL.md](INSTALL.md) for detailed installation instructions and troubleshooting.
+
+### Manual Installation
+
+#### 1. Clone the repository
 ```bash
 git clone https://github.com/craigfelt/Alliance.git
 cd Alliance
 ```
 
-### 2. Set up the database
+#### 2. Set up the database
 ```bash
 # Create PostgreSQL database
 createdb alliance_property
@@ -65,7 +79,7 @@ createdb alliance_property
 psql alliance_property < database/schema.sql
 ```
 
-### 3. Install backend dependencies
+#### 3. Install backend dependencies
 ```bash
 cd backend
 npm install
@@ -73,14 +87,14 @@ cp .env.example .env
 # Edit .env with your database credentials
 ```
 
-### 4. Install frontend dependencies
+#### 4. Install frontend dependencies
 ```bash
 cd ../frontend
 npm install
 cp .env.example .env
 ```
 
-### 5. Start the application
+#### 5. Start the application
 
 **Backend (Terminal 1):**
 ```bash

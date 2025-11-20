@@ -12,13 +12,19 @@ We provide easy-to-use installer scripts that automatically download and set up 
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1" -OutFile "install.ps1"; .\install.ps1
 ```
 
-**Option 1: PowerShell (Recommended)**
+**Option 1: PowerShell Launcher (Easiest - Recommended)**
+1. Download `install-powershell.bat` from [here](https://raw.githubusercontent.com/craigfelt/Alliance/main/install-powershell.bat)
+2. Double-click the file to run
+3. This launcher ensures PowerShell runs with correct settings and keeps the window open
+4. Follow the on-screen prompts
+
+**Option 2: PowerShell Direct**
 1. Download `install.ps1` from [here](https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1)
 2. Right-click the file and select "Run with PowerShell"
    - If you see a security warning, you may need to run: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 3. Follow the on-screen prompts
 
-**Option 2: Command Prompt/Batch**
+**Option 3: Command Prompt/Batch**
 1. Download `install.bat` from [here](https://raw.githubusercontent.com/craigfelt/Alliance/main/install.bat)
 2. Double-click the file to run
 3. Follow the on-screen prompts
@@ -141,6 +147,13 @@ The frontend will start at: http://localhost:5173
 
 ### Installation Issues
 
+**"PowerShell window closes immediately" or "Can't see the error"**
+- **Solution 1:** Use the `install-powershell.bat` launcher instead of running `install.ps1` directly
+- **Solution 2:** Open PowerShell manually, navigate to the directory, and run: `.\install.ps1`
+- **Solution 3:** Right-click `install.ps1`, select "Run with PowerShell"
+- The script now includes error trapping that should keep the window open on errors
+- If you still see issues, check the PostgreSQL password prompt - authentication errors are now displayed
+
 **"Node.js not found"**
 - Install Node.js from https://nodejs.org/
 - Make sure to restart your terminal/command prompt after installation
@@ -153,12 +166,13 @@ The frontend will start at: http://localhost:5173
 - Restart terminal/command prompt after installation
 - Verify with: `psql --version`
 
-**"Failed to create database"**
+**"Failed to create database" or PostgreSQL authentication errors**
 - Make sure PostgreSQL service is running
   - Windows: Check Services (services.msc), look for "postgresql-x64-14"
   - Mac: `brew services start postgresql@14`
   - Linux: `sudo systemctl start postgresql`
 - Verify you entered the correct PostgreSQL password
+- The installer now shows the actual PostgreSQL error messages to help diagnose the issue
 - Try connecting manually: `psql -U postgres`
 
 **"Permission denied" (Linux/Mac)**

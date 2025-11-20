@@ -63,7 +63,8 @@ See [INSTALLER_SUMMARY.md](INSTALLER_SUMMARY.md) for a quick overview, or jump d
 We provide automated installer scripts that will download and set up everything for you:
 
 **Windows:**
-- Download and run `install.ps1` (PowerShell) or `install.bat` (Command Prompt)
+- **Easiest:** Download and double-click `install-powershell.bat` (launches PowerShell installer with correct settings)
+- **Alternative:** Download and run `install.ps1` (PowerShell) or `install.bat` (Command Prompt)
 - The installer will automatically clone the repository if needed
 
 **Linux/Mac:**

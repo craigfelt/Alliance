@@ -60,7 +60,17 @@ We provide automated installer scripts for all platforms:
 **Linux/Mac:**
 - Download and run `install.sh`
 
-See [INSTALL.md](INSTALL.md) for detailed installation instructions and troubleshooting.
+**Quick Download (One Command):**
+```bash
+# Linux/Mac
+curl -o install.sh https://raw.githubusercontent.com/craigfelt/Alliance/main/install.sh && chmod +x install.sh && ./install.sh
+
+# Windows PowerShell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1" -OutFile "install.ps1"; .\install.ps1
+```
+
+📖 **See [INSTALL.md](INSTALL.md) for detailed installation instructions and troubleshooting.**
+📥 **See [DOWNLOAD.md](DOWNLOAD.md) for various download methods.**
 
 ### Manual Installation
 

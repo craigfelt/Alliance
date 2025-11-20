@@ -275,13 +275,17 @@ if (!$SkipDatabaseSetup) {
     if (!$SkipDatabaseSetup) {
         # Create database
         Write-Host "  Creating database..." -ForegroundColor Cyan
-        createdb -U $dbUser $dbName
+        Get-Content "database\create_database.sql" | psql -U $dbUser -d postgres 2>$null
         if ($LASTEXITCODE -ne 0) {
-            Write-Host "  Failed to create database" -ForegroundColor Red
-            Write-Host "  Make sure PostgreSQL is running and credentials are correct." -ForegroundColor Red
-            Write-Host ""
-            Read-Host "Press Enter to exit"
-            exit 1
+            Write-Host "  Database creation via script had issues, trying createdb command..." -ForegroundColor Yellow
+            createdb -U $dbUser $dbName 2>$null
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "  Failed to create database" -ForegroundColor Red
+                Write-Host "  Make sure PostgreSQL is running and credentials are correct." -ForegroundColor Red
+                Write-Host ""
+                Read-Host "Press Enter to exit"
+                exit 1
+            }
         }
         Write-Host "  Database created successfully!" -ForegroundColor Green
         

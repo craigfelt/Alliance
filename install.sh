@@ -267,11 +267,15 @@ fi
 if [ $CREATE_DB -eq 1 ]; then
     # Create database
     echo -e "  ${CYAN}Creating database...${NC}"
-    createdb -U $DB_USER $DB_NAME
+    psql -U $DB_USER -d postgres -f database/create_database.sql >/dev/null 2>&1
     if [ $? -ne 0 ]; then
-        echo -e "  ${RED}Failed to create database${NC}"
-        echo -e "  ${RED}Make sure PostgreSQL is running and credentials are correct.${NC}"
-        exit 1
+        echo -e "  ${YELLOW}Database creation via script had issues, trying createdb command...${NC}"
+        createdb -U $DB_USER $DB_NAME >/dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            echo -e "  ${RED}Failed to create database${NC}"
+            echo -e "  ${RED}Make sure PostgreSQL is running and credentials are correct.${NC}"
+            exit 1
+        fi
     fi
     echo -e "  ${GREEN}Database created successfully!${NC}"
     

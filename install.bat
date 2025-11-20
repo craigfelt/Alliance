@@ -245,12 +245,16 @@ if %errorlevel% equ 0 (
 
 if %CREATE_DB% equ 1 (
     echo   Creating database...
-    createdb -U postgres alliance_property
+    psql -U postgres -d postgres -f database\create_database.sql >nul 2>&1
     if %errorlevel% neq 0 (
-        echo   [ERROR] Failed to create database
-        echo   Make sure PostgreSQL is running and credentials are correct.
-        pause
-        exit /b 1
+        echo   [WARNING] Database creation via script had issues, trying createdb command...
+        createdb -U postgres alliance_property >nul 2>&1
+        if !errorlevel! neq 0 (
+            echo   [ERROR] Failed to create database
+            echo   Make sure PostgreSQL is running and credentials are correct.
+            pause
+            exit /b 1
+        )
     )
     echo   Database created successfully!
     

@@ -60,6 +60,8 @@ if (Test-Command "node") {
     Write-Host ""
     Write-Host "Please install Node.js 18+ from https://nodejs.org/" -ForegroundColor Red
     Write-Host "After installation, run this script again." -ForegroundColor Red
+    Write-Host ""
+    Read-Host "Press Enter to exit"
     exit 1
 }
 
@@ -71,6 +73,8 @@ if (Test-Command "npm") {
 } else {
     Write-Host " NOT FOUND" -ForegroundColor Red
     Write-Host "npm should be installed with Node.js. Please reinstall Node.js." -ForegroundColor Red
+    Write-Host ""
+    Read-Host "Press Enter to exit"
     exit 1
 }
 
@@ -86,6 +90,8 @@ if (Test-Command "psql") {
     Write-Host "After installation, make sure to add PostgreSQL to your PATH and run this script again." -ForegroundColor Red
     Write-Host ""
     Write-Host "TIP: During PostgreSQL installation, remember your password for the 'postgres' user." -ForegroundColor Yellow
+    Write-Host ""
+    Read-Host "Press Enter to exit"
     exit 1
 }
 
@@ -101,6 +107,8 @@ if (Test-Command "git") {
         Write-Host "Git is required to clone the repository." -ForegroundColor Red
         Write-Host "Please install Git from https://git-scm.com/download/windows" -ForegroundColor Red
         Write-Host "After installation, run this script again." -ForegroundColor Red
+        Write-Host ""
+        Read-Host "Press Enter to exit"
         exit 1
     } else {
         Write-Host " NOT FOUND (Optional)" -ForegroundColor Yellow
@@ -136,6 +144,8 @@ if ($needsClone) {
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Failed to clone repository" -ForegroundColor Red
         Write-Host "Please check your internet connection and try again." -ForegroundColor Red
+        Write-Host ""
+        Read-Host "Press Enter to exit"
         exit 1
     }
     
@@ -157,6 +167,8 @@ Write-Host "  Installing root dependencies..." -ForegroundColor Cyan
 npm install
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Failed to install root dependencies" -ForegroundColor Red
+    Write-Host ""
+    Read-Host "Press Enter to exit"
     exit 1
 }
 
@@ -166,6 +178,8 @@ Set-Location -Path "backend"
 npm install
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Failed to install backend dependencies" -ForegroundColor Red
+    Write-Host ""
+    Read-Host "Press Enter to exit"
     exit 1
 }
 Set-Location -Path ".."
@@ -176,6 +190,8 @@ Set-Location -Path "frontend"
 npm install
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Failed to install frontend dependencies" -ForegroundColor Red
+    Write-Host ""
+    Read-Host "Press Enter to exit"
     exit 1
 }
 Set-Location -Path ".."
@@ -246,6 +262,8 @@ if (!$SkipDatabaseSetup) {
             dropdb -U $dbUser $dbName
             if ($LASTEXITCODE -ne 0) {
                 Write-Host "  Failed to drop database" -ForegroundColor Red
+                Write-Host ""
+                Read-Host "Press Enter to exit"
                 exit 1
             }
         } else {
@@ -261,6 +279,8 @@ if (!$SkipDatabaseSetup) {
         if ($LASTEXITCODE -ne 0) {
             Write-Host "  Failed to create database" -ForegroundColor Red
             Write-Host "  Make sure PostgreSQL is running and credentials are correct." -ForegroundColor Red
+            Write-Host ""
+            Read-Host "Press Enter to exit"
             exit 1
         }
         Write-Host "  Database created successfully!" -ForegroundColor Green
@@ -270,6 +290,8 @@ if (!$SkipDatabaseSetup) {
         Get-Content "database\schema.sql" | psql -U $dbUser -d $dbName
         if ($LASTEXITCODE -ne 0) {
             Write-Host "  Failed to apply schema" -ForegroundColor Red
+            Write-Host ""
+            Read-Host "Press Enter to exit"
             exit 1
         }
         Write-Host "  Schema applied successfully!" -ForegroundColor Green
@@ -347,3 +369,6 @@ if ($startNow -eq 'y' -or $startNow -eq 'Y') {
 Write-Host ""
 Write-Host "Thank you for installing Alliance Property Management System!" -ForegroundColor Cyan
 Write-Host ""
+
+# Keep window open so user can read the output
+Read-Host "Press Enter to exit"

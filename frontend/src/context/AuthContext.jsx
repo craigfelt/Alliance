@@ -1,15 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { authService } from '../services';
-
-const AuthContext = createContext({});
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+import { AuthContext } from './authContext';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -22,14 +13,14 @@ export const AuthProvider = ({ children }) => {
         .getCurrentUser()
         .then((data) => {
           setUser(data.user);
+          setLoading(false);
         })
         .catch(() => {
           localStorage.removeItem('token');
-        })
-        .finally(() => {
           setLoading(false);
         });
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
     }
   }, []);

@@ -47,6 +47,7 @@ export default function Dashboard() {
     );
   }
 
+  // eslint-disable-next-line no-unused-vars
   const StatCard = ({ title, value, subtitle, icon: Icon, color, trend }) => (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition">
       <div className="flex items-start justify-between">

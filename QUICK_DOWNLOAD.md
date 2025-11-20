@@ -40,6 +40,8 @@ Then run the appropriate installer:
 - Windows Batch: `.\install.bat`
 - Linux/Mac: `./install.sh`
 
+📖 **For comprehensive cloning instructions, SSH setup, troubleshooting, and Git basics, see [CLONE_SETUP.md](CLONE_SETUP.md)**
+
 ## Verify Download
 
 After downloading, verify the file exists:

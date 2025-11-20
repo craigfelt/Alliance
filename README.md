@@ -79,6 +79,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/mai
 
 📖 **See [INSTALL.md](INSTALL.md) for detailed installation instructions and troubleshooting.**
 📥 **See [DOWNLOAD.md](DOWNLOAD.md) for various download methods.**
+🔄 **See [CLONE_SETUP.md](CLONE_SETUP.md) for comprehensive repository cloning guide.**
 
 ### Manual Installation
 
@@ -87,6 +88,8 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/mai
 git clone https://github.com/craigfelt/Alliance.git
 cd Alliance
 ```
+
+📖 **Need detailed cloning instructions?** See [CLONE_SETUP.md](CLONE_SETUP.md) for a comprehensive guide on cloning the repository to your PC, including multiple methods, troubleshooting, and Git basics.
 
 #### 2. Set up the database
 ```bash

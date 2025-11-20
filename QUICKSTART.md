@@ -13,6 +13,8 @@ git clone https://github.com/craigfelt/Alliance.git
 cd Alliance
 ```
 
+📖 **New to Git or need help?** See [CLONE_SETUP.md](CLONE_SETUP.md) for detailed cloning instructions, multiple methods, and troubleshooting.
+
 ### Step 2: Install Dependencies
 ```bash
 # Install all dependencies (frontend and backend)

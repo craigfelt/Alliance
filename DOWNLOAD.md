@@ -26,6 +26,8 @@ cd Alliance
 
 Then run the appropriate installer for your platform.
 
+📖 **For detailed cloning instructions, troubleshooting, and alternative methods, see [CLONE_SETUP.md](CLONE_SETUP.md)**
+
 ### Method 3: Download ZIP Archive
 
 1. Go to the GitHub repository: https://github.com/craigfelt/Alliance

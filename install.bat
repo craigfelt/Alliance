@@ -220,10 +220,51 @@ echo   Database User: postgres
 echo.
 echo   Please make sure PostgreSQL is running before proceeding.
 echo.
+echo   NOTE: If you forgot your PostgreSQL password, see:
+echo         POSTGRESQL_PASSWORD_SETUP.md for password reset instructions
+echo.
+
+:get_password
 set /p DB_PASSWORD="   Enter PostgreSQL password for 'postgres' user: "
 
 REM Set PostgreSQL password for commands
 set PGPASSWORD=%DB_PASSWORD%
+
+REM Test the password by trying to connect
+echo.
+echo   Testing PostgreSQL connection and password...
+psql -U postgres -c "SELECT 1;" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo.
+    echo   [ERROR] Failed to connect to PostgreSQL
+    echo.
+    echo   Possible issues:
+    echo   1. PostgreSQL service is not running
+    echo      - Check services.msc for 'postgresql-x64-XX' service
+    echo      - Make sure it's started
+    echo.
+    echo   2. Incorrect password
+    echo      - Double-check your password
+    echo      - Try again or reset password: run reset-postgres-password.bat
+    echo.
+    echo   3. Connection settings
+    echo      - Verify postgres user exists
+    echo      - Check PostgreSQL is listening on localhost:5432
+    echo.
+    set /p RETRY="   Would you like to try again? (Y/n): "
+    if /i "!RETRY!"=="n" (
+        set PGPASSWORD=
+        echo.
+        echo   Database setup cancelled.
+        echo   You can run this installer again later.
+        pause
+        exit /b 1
+    )
+    set PGPASSWORD=
+    goto get_password
+)
+
+echo   Connection successful! Password verified.
 
 REM Check if database exists
 echo.
@@ -254,23 +295,52 @@ if %CREATE_DB% equ 1 (
     psql -U postgres -d postgres -f database\create_database.sql >nul 2>&1
     if %errorlevel% neq 0 (
         echo   [WARNING] Database creation via script had issues, trying createdb command...
-        createdb -U postgres alliance_property >nul 2>&1
+        createdb -U postgres alliance_property 2>error.tmp
         if !errorlevel! neq 0 (
             echo   [ERROR] Failed to create database
-            echo   Make sure PostgreSQL is running and credentials are correct.
+            echo.
+            if exist error.tmp (
+                echo   Error details:
+                type error.tmp
+                del error.tmp
+            )
+            echo.
+            echo   Please verify:
+            echo   - PostgreSQL service is running
+            echo   - Password is correct (you entered it successfully above)
+            echo   - User 'postgres' has createdb permission
+            echo.
+            echo   For help, see POSTGRESQL_PASSWORD_SETUP.md
+            echo.
+            set PGPASSWORD=
             pause
             exit /b 1
         )
+        if exist error.tmp del error.tmp
     )
     echo   Database created successfully!
     
     echo   Applying database schema...
-    psql -U postgres -d alliance_property -f database\schema.sql >nul
+    psql -U postgres -d alliance_property -f database\schema.sql 2>error.tmp
     if %errorlevel% neq 0 (
         echo   [ERROR] Failed to apply schema
+        echo.
+        if exist error.tmp (
+            echo   Error details:
+            type error.tmp
+            del error.tmp
+        )
+        echo.
+        echo   The database was created but schema application failed.
+        echo   You may need to:
+        echo   - Check database\schema.sql for syntax errors
+        echo   - Apply the schema manually: psql -U postgres -d alliance_property -f database\schema.sql
+        echo.
+        set PGPASSWORD=
         pause
         exit /b 1
     )
+    if exist error.tmp del error.tmp
     echo   Schema applied successfully!
 )
 

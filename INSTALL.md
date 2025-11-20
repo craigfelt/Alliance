@@ -6,27 +6,36 @@ We provide easy-to-use installer scripts that automatically download and set up 
 
 ### Windows Users
 
-**Quick Install (One Command):**
-```powershell
-# In PowerShell, run:
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1" -OutFile "install.ps1"; .\install.ps1
-```
-
-**Option 1: PowerShell Launcher (Easiest - Recommended)**
+**Option 1: PowerShell Launcher (⭐ EASIEST - RECOMMENDED)**
 1. Download `install-powershell.bat` from [here](https://raw.githubusercontent.com/craigfelt/Alliance/main/install-powershell.bat)
 2. Double-click the file to run
-3. This launcher ensures PowerShell runs with correct settings and keeps the window open
+3. This launcher automatically bypasses PowerShell execution policy restrictions and keeps the window open
 4. Follow the on-screen prompts
 
-**Option 2: PowerShell Direct**
-1. Download `install.ps1` from [here](https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1)
-2. Right-click the file and select "Run with PowerShell"
-   - If you see a security warning, you may need to run: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
-3. Follow the on-screen prompts
-
-**Option 3: Command Prompt/Batch**
+**Option 2: Command Prompt/Batch**
 1. Download `install.bat` from [here](https://raw.githubusercontent.com/craigfelt/Alliance/main/install.bat)
 2. Double-click the file to run
+3. Follow the on-screen prompts
+
+**Option 3: Quick Install (One Command - PowerShell)**
+```powershell
+# In PowerShell, run:
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/main/install-powershell.bat" -OutFile "install-powershell.bat"; .\install-powershell.bat
+```
+
+**Option 4: PowerShell Direct (Advanced)**
+1. Download `install.ps1` from [here](https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1)
+2. Run using one of these methods:
+   - **Method A:** Open PowerShell and run:
+     ```powershell
+     powershell.exe -ExecutionPolicy Bypass -File .\install.ps1
+     ```
+   - **Method B:** Change execution policy (requires admin):
+     ```powershell
+     Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+     .\install.ps1
+     ```
+   - **Method C:** Right-click the file and select "Run with PowerShell" (may show security warning)
 3. Follow the on-screen prompts
 
 ### Linux/Mac Users
@@ -147,6 +156,43 @@ The frontend will start at: http://localhost:5173
 ## 🔧 Troubleshooting
 
 ### Installation Issues
+
+**"Failed to connect to PostgreSQL" or "Incorrect password" during installation**
+- **What it means:** The installer cannot connect to PostgreSQL with the password you provided
+- **Complete Guide:** See [POSTGRESQL_PASSWORD_SETUP.md](POSTGRESQL_PASSWORD_SETUP.md) for password reset
+- **Quick Solutions:**
+  1. **Verify PostgreSQL is running:**
+     - Windows: Open services.msc, look for "postgresql-x64-XX", ensure it's started
+     - Linux: `sudo systemctl status postgresql`
+     - Mac: `brew services list | grep postgresql`
+  2. **Double-check your password:**
+     - Try connecting manually: `psql -U postgres`
+     - If this works, re-run the installer with the same password
+  3. **Reset your password:**
+     - Windows: Run `reset-postgres-password.bat` as Administrator
+     - Linux/Mac: Run `./reset-postgres-password.sh`
+     - Or follow manual steps in [POSTGRESQL_PASSWORD_SETUP.md](POSTGRESQL_PASSWORD_SETUP.md)
+  4. **Common default passwords to try:**
+     - `postgres`
+     - The password you set during PostgreSQL installation
+     - Check your password manager or installation notes
+
+**"PowerShell script cannot be loaded" or "not digitally signed" error**
+- **What it means:** Windows PowerShell execution policy is blocking unsigned scripts for security
+- **Complete Guide:** See [POWERSHELL_EXECUTION_POLICY.md](POWERSHELL_EXECUTION_POLICY.md) for detailed solutions
+- **Solution 1 (EASIEST):** Use `install-powershell.bat` instead of running `install.ps1` directly
+  - Download: [install-powershell.bat](https://raw.githubusercontent.com/craigfelt/Alliance/main/install-powershell.bat)
+  - Double-click to run - it automatically bypasses the execution policy for the installer
+- **Solution 2:** Run the PowerShell script with bypass flag:
+  ```powershell
+  powershell.exe -ExecutionPolicy Bypass -File .\install.ps1
+  ```
+- **Solution 3:** Change your execution policy (if you have admin rights):
+  ```powershell
+  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+  ```
+  Then run: `.\install.ps1`
+- **More info:** https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies
 
 **"PowerShell window closes immediately" or "Can't see the error"**
 - **Solution 1:** Use the `install-powershell.bat` launcher instead of running `install.ps1` directly

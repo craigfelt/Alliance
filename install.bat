@@ -222,7 +222,7 @@ set PGPASSWORD=%DB_PASSWORD%
 REM Check if database exists
 echo.
 echo   Checking if database exists...
-psql -U postgres -lqt 2>nul | findstr /b "alliance_property" >nul 2>&1
+psql -U postgres -lqt 2>nul | findstr /C:"alliance_property" >nul 2>&1
 if %errorlevel% equ 0 (
     echo   Database 'alliance_property' already exists.
     set /p RECREATE="   Do you want to drop and recreate it? (y/N): "
@@ -236,7 +236,7 @@ if %errorlevel% equ 0 (
         )
         set CREATE_DB=1
     ) else (
-        echo   Keeping existing database.
+        echo   Keeping existing database. Skipping database setup...
         set CREATE_DB=0
     )
 ) else (

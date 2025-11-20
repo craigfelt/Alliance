@@ -63,8 +63,11 @@ See [INSTALLER_SUMMARY.md](INSTALLER_SUMMARY.md) for a quick overview, or jump d
 We provide automated installer scripts that will download and set up everything for you:
 
 **Windows:**
-- **Easiest:** Download and double-click `install-powershell.bat` (launches PowerShell installer with correct settings)
-- **Alternative:** Download and run `install.ps1` (PowerShell) or `install.bat` (Command Prompt)
+- **⭐ EASIEST (Recommended):** Download and double-click `install-powershell.bat` 
+  - This launcher automatically handles PowerShell execution policy and runs the installer
+  - No security warnings or permission issues!
+- **Alternative 1:** Download and run `install.bat` (Command Prompt version)
+- **Alternative 2:** Download `install.ps1` and run with: `powershell.exe -ExecutionPolicy Bypass -File .\install.ps1`
 - The installer will automatically clone the repository if needed
 
 **Linux/Mac:**
@@ -76,8 +79,11 @@ We provide automated installer scripts that will download and set up everything 
 # Linux/Mac
 curl -o install.sh https://raw.githubusercontent.com/craigfelt/Alliance/main/install.sh && chmod +x install.sh && ./install.sh
 
-# Windows PowerShell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1" -OutFile "install.ps1"; .\install.ps1
+# Windows PowerShell (Downloads and runs launcher - no execution policy issues!)
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/main/install-powershell.bat" -OutFile "install-powershell.bat"; .\install-powershell.bat
+
+# Windows PowerShell (Alternative - Direct script with bypass)
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1" -OutFile "install.ps1"; powershell.exe -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
 **The installer will automatically:**

@@ -5,7 +5,32 @@
 ### Prerequisites
 - Node.js 18+ installed
 - PostgreSQL 14+ installed and running
-- Git
+- Git installed
+
+## Option 1: Automated Installation (Recommended)
+
+**Windows PowerShell:**
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1" -OutFile "install.ps1"; .\install.ps1
+```
+
+**Linux/Mac:**
+```bash
+curl -o install.sh https://raw.githubusercontent.com/craigfelt/Alliance/main/install.sh && chmod +x install.sh && ./install.sh
+```
+
+The installer will:
+- ✅ Clone the repository from GitHub
+- ✅ Install all dependencies
+- ✅ Set up the database
+- ✅ Configure environment files
+- ✅ Provide instructions to start the application
+
+**Skip to Step 6 (Login) after the installer completes!**
+
+---
+
+## Option 2: Manual Installation
 
 ### Step 1: Clone the Repository
 ```bash
@@ -60,6 +85,8 @@ cd frontend
 npm run dev
 # App will start on http://localhost:5173
 ```
+
+---
 
 ### Step 6: Login
 

@@ -27,6 +27,19 @@ function Test-Command {
     }
 }
 
+# Check if we're in a cloned repository or need to clone
+$REPO_URL = "https://github.com/craigfelt/Alliance.git"
+$needsClone = $false
+$originalLocation = Get-Location
+
+# Check if we're in the Alliance repository
+if (!(Test-Path "package.json") -or !(Test-Path "backend") -or !(Test-Path "frontend")) {
+    Write-Host "Repository files not found in current directory." -ForegroundColor Yellow
+    Write-Host "This installer will clone the repository from GitHub." -ForegroundColor Yellow
+    Write-Host ""
+    $needsClone = $true
+}
+
 # Step 1: Check Prerequisites
 Write-Host "Step 1: Checking Prerequisites..." -ForegroundColor Yellow
 Write-Host ""
@@ -82,13 +95,58 @@ if (Test-Command "git") {
     $gitVersion = git --version
     Write-Host " Found: $gitVersion" -ForegroundColor Green
 } else {
-    Write-Host " NOT FOUND (Optional)" -ForegroundColor Yellow
-    Write-Host "    Git is optional but recommended for updates." -ForegroundColor Yellow
+    if ($needsClone) {
+        Write-Host " NOT FOUND" -ForegroundColor Red
+        Write-Host ""
+        Write-Host "Git is required to clone the repository." -ForegroundColor Red
+        Write-Host "Please install Git from https://git-scm.com/download/windows" -ForegroundColor Red
+        Write-Host "After installation, run this script again." -ForegroundColor Red
+        exit 1
+    } else {
+        Write-Host " NOT FOUND (Optional)" -ForegroundColor Yellow
+        Write-Host "    Git is optional but recommended for updates." -ForegroundColor Yellow
+    }
 }
 
 Write-Host ""
 Write-Host "All required prerequisites are installed!" -ForegroundColor Green
 Write-Host ""
+
+# Step 1.5: Clone Repository if needed
+if ($needsClone) {
+    Write-Host "Step 1.5: Cloning Repository from GitHub..." -ForegroundColor Yellow
+    Write-Host ""
+    
+    $cloneDir = "Alliance"
+    $counter = 1
+    
+    # Find available directory name
+    while (Test-Path $cloneDir) {
+        $cloneDir = "Alliance_$counter"
+        $counter++
+    }
+    
+    Write-Host "  Cloning into: $cloneDir" -ForegroundColor Cyan
+    Write-Host "  Repository: $REPO_URL" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "  This may take a few minutes depending on your connection..." -ForegroundColor Yellow
+    Write-Host ""
+    
+    git clone $REPO_URL $cloneDir
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Failed to clone repository" -ForegroundColor Red
+        Write-Host "Please check your internet connection and try again." -ForegroundColor Red
+        exit 1
+    }
+    
+    Write-Host ""
+    Write-Host "  Repository cloned successfully!" -ForegroundColor Green
+    Write-Host "  Changing to repository directory..." -ForegroundColor Cyan
+    Write-Host ""
+    
+    Set-Location -Path $cloneDir
+}
+
 
 # Step 2: Install Dependencies
 Write-Host "Step 2: Installing Dependencies..." -ForegroundColor Yellow

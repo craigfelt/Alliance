@@ -2,12 +2,33 @@
 
 ## 📥 Downloading the Installer
 
-You can download the installer files directly from the GitHub repository. Here are the methods:
+**NEW!** The installer now automatically downloads all files from GitHub for you. You only need to download the installer script itself!
 
-### Method 1: Download Individual Files from GitHub
+### Method 1: One-Command Install (Easiest)
+
+**Windows PowerShell:**
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1" -OutFile "install.ps1"; .\install.ps1
+```
+
+**Linux/Mac:**
+```bash
+curl -o install.sh https://raw.githubusercontent.com/craigfelt/Alliance/main/install.sh && chmod +x install.sh && ./install.sh
+```
+
+This will:
+1. Download the installer script
+2. Run it immediately
+3. The installer will then clone the full repository from GitHub
+4. Install all dependencies
+5. Set up the database
+
+### Method 2: Download Installer Script Only
+
+The installer will automatically clone the repository for you, so you only need to download one file:
 
 1. Go to the GitHub repository: https://github.com/craigfelt/Alliance
-2. Navigate to the file you want to download:
+2. Navigate to the installer file you want:
    - For Windows PowerShell: Click on `install.ps1`
    - For Windows Batch: Click on `install.bat`
    - For Linux/Mac: Click on `install.sh`
@@ -15,26 +36,30 @@ You can download the installer files directly from the GitHub repository. Here a
 4. Right-click on the page and select **"Save As..."** (or press Ctrl+S / Cmd+S)
 5. Save the file to your desired location (e.g., Downloads folder)
 
-### Method 2: Clone the Repository
+Then run the installer - it will automatically clone the repository and install everything!
 
-If you have Git installed:
+### Method 3: Clone the Repository Manually (Advanced Users)
+
+If you prefer to clone the repository yourself first:
 
 ```bash
 git clone https://github.com/craigfelt/Alliance.git
 cd Alliance
 ```
 
-Then run the appropriate installer for your platform.
+Then run the appropriate installer for your platform. The installer will detect that you've already cloned the repository and skip the cloning step.
 
 📖 **For detailed cloning instructions, troubleshooting, and alternative methods, see [CLONE_SETUP.md](CLONE_SETUP.md)**
 
-### Method 3: Download ZIP Archive
+### Method 4: Download ZIP Archive (Not Recommended)
 
 1. Go to the GitHub repository: https://github.com/craigfelt/Alliance
 2. Click the green **"Code"** button
 3. Select **"Download ZIP"**
 4. Extract the ZIP file to your desired location
 5. Navigate to the extracted folder
+
+Note: We recommend using Method 1 or 2 instead, as they ensure you get the latest version.
 
 ## 🖥️ Running the Installer
 
@@ -96,19 +121,27 @@ Before running the installer, make sure you have:
    - Mac: https://postgresapp.com/ or `brew install postgresql@14`
    - Linux: `sudo apt-get install postgresql`
 
-3. **Your PostgreSQL password** ready
+3. **Git** installed
+   - Download: https://git-scm.com/
+   - Required for the installer to clone the repository
+
+4. **Your PostgreSQL password** ready
    - You'll be prompted to enter it during installation
+
+5. **Internet connection**
+   - Required to clone the repository and download dependencies
 
 ## 🎬 What Happens During Installation
 
 The installer will:
 
-1. ✅ Check if all prerequisites are installed
-2. ✅ Install all Node.js dependencies (this may take a few minutes)
-3. ✅ Create configuration files (.env)
-4. ✅ Set up the PostgreSQL database
-5. ✅ Apply the database schema
-6. ✅ Give you instructions to start the application
+1. ✅ Check if all prerequisites are installed (Node.js, PostgreSQL, Git)
+2. ✅ Clone the repository from GitHub (if not already cloned)
+3. ✅ Install all Node.js dependencies (this may take a few minutes)
+4. ✅ Create configuration files (.env)
+5. ✅ Set up the PostgreSQL database
+6. ✅ Apply the database schema
+7. ✅ Give you instructions to start the application
 
 ## 🚀 After Installation
 
@@ -116,13 +149,13 @@ Once complete, you'll see instructions to:
 
 1. **Start the backend** (in one terminal):
    ```bash
-   cd backend
+   cd Alliance/backend  # or Alliance_1/backend if Alliance directory existed
    npm run dev
    ```
 
 2. **Start the frontend** (in another terminal):
    ```bash
-   cd frontend
+   cd Alliance/frontend  # or Alliance_1/frontend if Alliance directory existed
    npm run dev
    ```
 

@@ -60,15 +60,17 @@ See [INSTALLER_SUMMARY.md](INSTALLER_SUMMARY.md) for a quick overview, or jump d
 
 ### Easy Installation (Recommended)
 
-We provide automated installer scripts for all platforms:
+We provide automated installer scripts that will download and set up everything for you:
 
 **Windows:**
 - Download and run `install.ps1` (PowerShell) or `install.bat` (Command Prompt)
+- The installer will automatically clone the repository if needed
 
 **Linux/Mac:**
 - Download and run `install.sh`
+- The installer will automatically clone the repository if needed
 
-**Quick Download (One Command):**
+**Quick Download & Install (One Command):**
 ```bash
 # Linux/Mac
 curl -o install.sh https://raw.githubusercontent.com/craigfelt/Alliance/main/install.sh && chmod +x install.sh && ./install.sh
@@ -77,9 +79,16 @@ curl -o install.sh https://raw.githubusercontent.com/craigfelt/Alliance/main/ins
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1" -OutFile "install.ps1"; .\install.ps1
 ```
 
+**The installer will automatically:**
+- Clone the repository from GitHub (if not already cloned)
+- Check all prerequisites
+- Install all dependencies
+- Set up the database
+- Configure environment files
+
 📖 **See [INSTALL.md](INSTALL.md) for detailed installation instructions and troubleshooting.**
 📥 **See [DOWNLOAD.md](DOWNLOAD.md) for various download methods.**
-🔄 **See [CLONE_SETUP.md](CLONE_SETUP.md) for comprehensive repository cloning guide.**
+🔄 **See [CLONE_SETUP.md](CLONE_SETUP.md) for manual repository cloning (optional).**
 
 ### Manual Installation
 

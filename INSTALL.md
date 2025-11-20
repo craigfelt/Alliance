@@ -2,26 +2,39 @@
 
 ## 📦 Quick Install
 
-We provide easy-to-use installer scripts for all major platforms. Choose the one for your operating system:
+We provide easy-to-use installer scripts that automatically download and set up everything for you. Just download and run the installer - **no need to manually clone the repository**!
 
 ### Windows Users
 
+**Quick Install (One Command):**
+```powershell
+# In PowerShell, run:
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1" -OutFile "install.ps1"; .\install.ps1
+```
+
 **Option 1: PowerShell (Recommended)**
-1. Download `install.ps1`
+1. Download `install.ps1` from [here](https://raw.githubusercontent.com/craigfelt/Alliance/main/install.ps1)
 2. Right-click the file and select "Run with PowerShell"
    - If you see a security warning, you may need to run: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 3. Follow the on-screen prompts
 
 **Option 2: Command Prompt/Batch**
-1. Download `install.bat`
+1. Download `install.bat` from [here](https://raw.githubusercontent.com/craigfelt/Alliance/main/install.bat)
 2. Double-click the file to run
 3. Follow the on-screen prompts
 
 ### Linux/Mac Users
 
-1. Download `install.sh`
+**Quick Install (One Command):**
+```bash
+# In Terminal, run:
+curl -o install.sh https://raw.githubusercontent.com/craigfelt/Alliance/main/install.sh && chmod +x install.sh && ./install.sh
+```
+
+**Step-by-Step:**
+1. Download `install.sh` from [here](https://raw.githubusercontent.com/craigfelt/Alliance/main/install.sh)
 2. Open Terminal in the download location
-3. Make the script executable (if not already):
+3. Make the script executable:
    ```bash
    chmod +x install.sh
    ```
@@ -39,24 +52,29 @@ The installer automates the entire setup process:
    - Verifies Node.js 18+ is installed
    - Verifies npm is available
    - Verifies PostgreSQL 14+ is installed
-   - Checks for Git (optional)
+   - Checks for Git (required for cloning, if repository not already present)
 
-2. **Installs Dependencies**
+2. **Clones Repository (if needed)**
+   - Automatically detects if running from a cloned repository
+   - If not, clones the full repository from GitHub
+   - Creates a new directory (Alliance, or Alliance_1 if exists)
+
+3. **Installs Dependencies**
    - Installs root project dependencies
    - Installs backend (Node.js/Express) dependencies
    - Installs frontend (React/Vite) dependencies
 
-3. **Configures Environment**
+4. **Configures Environment**
    - Creates `.env` files from templates
    - Prompts for PostgreSQL password
    - Configures database connection settings
 
-4. **Sets Up Database**
+5. **Sets Up Database**
    - Creates `alliance_property` PostgreSQL database
    - Applies database schema
    - Sets up initial data and admin user
 
-5. **Provides Next Steps**
+6. **Provides Next Steps**
    - Shows how to start the backend server
    - Shows how to start the frontend application
    - Displays default login credentials
@@ -77,16 +95,17 @@ Before running the installer, make sure you have:
    - Linux: `sudo apt-get install postgresql` (Ubuntu/Debian)
    - Verify installation: `psql --version`
 
-3. **Git** (Optional, recommended for updates)
+3. **Git** (Required for automatic installation)
    - Download: https://git-scm.com/
    - Verify installation: `git --version`
+   - Note: Git is required for the installer to clone the repository
 
 ### System Requirements
 
 - **Operating System**: Windows 10/11, macOS 10.15+, or Linux
 - **RAM**: 4GB minimum, 8GB recommended
 - **Disk Space**: 500MB for application + space for database
-- **Internet**: Required for downloading dependencies
+- **Internet**: Required for cloning repository and downloading dependencies
 
 ## 🚀 After Installation
 

@@ -6,7 +6,7 @@ param(
     [switch]$SkipDatabaseSetup = $false
 )
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 
 Write-Host ""
 Write-Host "======================================================" -ForegroundColor Cyan
@@ -252,7 +252,31 @@ if (!$SkipDatabaseSetup) {
     # Check if database exists
     Write-Host "  Checking if database exists..." -ForegroundColor Cyan
     $env:PGPASSWORD = $dbPasswordPlain
-    $dbExists = psql -U $dbUser -lqt 2>$null | Select-String -Pattern "\b$dbName\b" -Quiet
+    
+    try {
+        $dbListOutput = psql -U $dbUser -lqt 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "  ERROR: Failed to connect to PostgreSQL" -ForegroundColor Red
+            Write-Host "  $dbListOutput" -ForegroundColor Red
+            Write-Host ""
+            Write-Host "  Please verify:" -ForegroundColor Yellow
+            Write-Host "  1. PostgreSQL service is running" -ForegroundColor Yellow
+            Write-Host "  2. Password is correct for user '$dbUser'" -ForegroundColor Yellow
+            Write-Host "  3. User '$dbUser' has permission to connect" -ForegroundColor Yellow
+            Write-Host ""
+            $env:PGPASSWORD = $null
+            Read-Host "Press Enter to exit"
+            exit 1
+        }
+        $dbExists = $dbListOutput | Select-String -Pattern "\b$dbName\b" -Quiet
+    }
+    catch {
+        Write-Host "  ERROR: Failed to check database: $_" -ForegroundColor Red
+        Write-Host ""
+        $env:PGPASSWORD = $null
+        Read-Host "Press Enter to exit"
+        exit 1
+    }
     
     if ($dbExists) {
         Write-Host "  Database '$dbName' already exists." -ForegroundColor Yellow
@@ -275,30 +299,61 @@ if (!$SkipDatabaseSetup) {
     if (!$SkipDatabaseSetup) {
         # Create database
         Write-Host "  Creating database..." -ForegroundColor Cyan
-        Get-Content "database\create_database.sql" | psql -U $dbUser -d postgres 2>$null
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "  Database creation via script had issues, trying createdb command..." -ForegroundColor Yellow
-            createdb -U $dbUser $dbName 2>$null
-            if ($LASTEXITCODE -ne 0) {
-                Write-Host "  Failed to create database" -ForegroundColor Red
-                Write-Host "  Make sure PostgreSQL is running and credentials are correct." -ForegroundColor Red
-                Write-Host ""
-                Read-Host "Press Enter to exit"
-                exit 1
-            }
-        }
-        Write-Host "  Database created successfully!" -ForegroundColor Green
         
-        # Run schema
-        Write-Host "  Applying database schema..." -ForegroundColor Cyan
-        Get-Content "database\schema.sql" | psql -U $dbUser -d $dbName
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "  Failed to apply schema" -ForegroundColor Red
+        try {
+            $createOutput = Get-Content "database\create_database.sql" | psql -U $dbUser -d postgres 2>&1
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "  Database creation via script had issues, trying createdb command..." -ForegroundColor Yellow
+                $createdbOutput = createdb -U $dbUser $dbName 2>&1
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Host "  ERROR: Failed to create database" -ForegroundColor Red
+                    Write-Host "  $createdbOutput" -ForegroundColor Red
+                    Write-Host ""
+                    Write-Host "  Please verify:" -ForegroundColor Yellow
+                    Write-Host "  1. PostgreSQL is running" -ForegroundColor Yellow
+                    Write-Host "  2. Credentials are correct" -ForegroundColor Yellow
+                    Write-Host "  3. User '$dbUser' has createdb permission" -ForegroundColor Yellow
+                    Write-Host ""
+                    $env:PGPASSWORD = $null
+                    Read-Host "Press Enter to exit"
+                    exit 1
+                }
+            }
+            Write-Host "  Database created successfully!" -ForegroundColor Green
+        }
+        catch {
+            Write-Host "  ERROR: Failed to create database: $_" -ForegroundColor Red
             Write-Host ""
+            $env:PGPASSWORD = $null
             Read-Host "Press Enter to exit"
             exit 1
         }
-        Write-Host "  Schema applied successfully!" -ForegroundColor Green
+        
+        # Run schema
+        Write-Host "  Applying database schema..." -ForegroundColor Cyan
+        
+        try {
+            $schemaOutput = Get-Content "database\schema.sql" | psql -U $dbUser -d $dbName 2>&1
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "  ERROR: Failed to apply schema" -ForegroundColor Red
+                Write-Host "  $schemaOutput" -ForegroundColor Red
+                Write-Host ""
+                Write-Host "  The database was created but schema application failed." -ForegroundColor Yellow
+                Write-Host "  You may need to run the schema manually." -ForegroundColor Yellow
+                Write-Host ""
+                $env:PGPASSWORD = $null
+                Read-Host "Press Enter to exit"
+                exit 1
+            }
+            Write-Host "  Schema applied successfully!" -ForegroundColor Green
+        }
+        catch {
+            Write-Host "  ERROR: Failed to apply schema: $_" -ForegroundColor Red
+            Write-Host ""
+            $env:PGPASSWORD = $null
+            Read-Host "Press Enter to exit"
+            exit 1
+        }
     }
     
     # Clear password from environment

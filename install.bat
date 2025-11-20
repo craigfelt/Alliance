@@ -16,10 +16,14 @@ set REPO_URL=https://github.com/craigfelt/Alliance.git
 set NEEDS_CLONE=0
 set ORIGINAL_DIR=%CD%
 
-REM Check if we're in the Alliance repository
+REM Check if we're in the Alliance repository (need ALL files to exist)
 if not exist "package.json" set NEEDS_CLONE=1
-if not exist "backend" set NEEDS_CLONE=1
-if not exist "frontend" set NEEDS_CLONE=1
+if not exist "backend" (
+    set NEEDS_CLONE=1
+)
+if not exist "frontend" (
+    set NEEDS_CLONE=1
+)
 
 if %NEEDS_CLONE% equ 1 (
     echo Repository files not found in current directory.

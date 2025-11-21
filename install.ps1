@@ -1,6 +1,24 @@
 # Alliance Property Management System - Windows Installer (PowerShell)
 # Run this script to install and setup the application
-# Usage: Run PowerShell as Administrator and execute: .\install.ps1
+#
+# IMPORTANT: If you get a "cannot be loaded" or "not digitally signed" error,
+# you have two options:
+#
+# Option 1 (EASIEST): Use the install-powershell.bat launcher instead
+#   - Double-click install-powershell.bat
+#   - This automatically bypasses execution policy for this script only
+#
+# Option 2: Run this script with execution policy bypass
+#   - Open PowerShell and run:
+#     powershell.exe -ExecutionPolicy Bypass -File .\install.ps1
+#
+# Option 3: Change your execution policy (if you have admin rights)
+#   - Open PowerShell as Administrator and run:
+#     Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+#   - Then run: .\install.ps1
+#
+# For more info on execution policies, see:
+# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies
 
 param(
     [switch]$SkipDatabaseSetup = $false

@@ -2,6 +2,8 @@
 
 Your Alliance app has been configured to use SQLite instead of PostgreSQL. This means **no database installation is required** - everything works out of the box!
 
+> 📖 **New to working with the AI agent?** See [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md) for a complete guide on the workflow.
+
 ## ✅ What's Been Done
 
 1. ✅ SQLite database package installed (`better-sqlite3`)

@@ -8,12 +8,16 @@
     "dev": "nodemon src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["property-management", "commercial-leasing"],
+  "keywords": [
+    "property-management",
+    "commercial-leasing"
+  ],
   "author": "Alliance Property Group",
   "license": "ISC",
   "description": "Backend API for Alliance Property Management System",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^11.10.0",
     "cors": "^2.8.5",
     "csv-parse": "^5.5.6",
     "date-fns": "^4.1.0",

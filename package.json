@@ -1,6 +1,7 @@
 {
   "name": "alliance-property-management",
   "version": "1.0.0",
+  "type": "module",
   "description": "Property Management System for Alliance Property Group",
   "scripts": {
     "setup": "chmod +x database/setup.sh && ./database/setup.sh",
@@ -18,5 +19,9 @@
     "south-africa"
   ],
   "author": "Alliance Property Group",
-  "license": "PROPRIETARY"
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "pg": "^8.16.3"
+  }
 }

@@ -373,13 +373,12 @@ if (!$SkipDatabaseSetup) {
         Write-Host "  Creating database..." -ForegroundColor Cyan
         
         try {
-            $createOutput = Get-Content "database\create_database.sql" | psql -U $dbUser -d postgres 2>&1
+            Get-Content "database\create_database.sql" | psql -U $dbUser -d postgres 2>&1 | Out-Null
             if ($LASTEXITCODE -ne 0) {
                 Write-Host "  Database creation via script had issues, trying createdb command..." -ForegroundColor Yellow
-                $createdbOutput = createdb -U $dbUser $dbName 2>&1
+                createdb -U $dbUser $dbName 2>&1 | Out-Null
                 if ($LASTEXITCODE -ne 0) {
                     Write-Host "  ERROR: Failed to create database" -ForegroundColor Red
-                    Write-Host "  $createdbOutput" -ForegroundColor Red
                     Write-Host ""
                     Write-Host "  Please verify:" -ForegroundColor Yellow
                     Write-Host "  1. PostgreSQL is running" -ForegroundColor Yellow
@@ -405,12 +404,10 @@ if (!$SkipDatabaseSetup) {
         Write-Host "  Applying database schema..." -ForegroundColor Cyan
         
         try {
-            $schemaOutput = Get-Content "database\schema.sql" | psql -U $dbUser -d $dbName 2>&1
+            Get-Content "database\schema.sql" | psql -U $dbUser -d $dbName 2>&1 | Out-Null
             if ($LASTEXITCODE -ne 0) {
                 Write-Host "  ERROR: Failed to apply schema" -ForegroundColor Red
-                Write-Host "  $schemaOutput" -ForegroundColor Red
                 Write-Host ""
-                Write-Host "  The database was created but schema application failed." -ForegroundColor Yellow
                 Write-Host "  You may need to run the schema manually." -ForegroundColor Yellow
                 Write-Host ""
                 $env:PGPASSWORD = $null
